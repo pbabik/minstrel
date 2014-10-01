@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<style>
+#metacontainer ul {         
+          padding:0 0 0 0;
+          margin:0 0 0 0;
+      }
+#metacontainer ul li {     
+          list-style:none;
+          margin-bottom:25px;       
+      }
+#metacontainer ul li img {
+          cursor: pointer;
+          width: 300px;
+          height: 200px; 
+      }
+.toolbar {
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+
+#map {
+	height: 400px;
+	width:100%;
+	
+}
+</style>
+<link rel="stylesheet" href="{{url_for('static',filename='leaflet.css')}}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static',filename='leaflet.js')}}"></script>
+{% endblock %}
+
+{% block content_title %}Load album{% endblock %}
+
+
+{% block content %}
+
+<div class="container" id="metacontainer">
+    <div class="row">
+		<!--Albums list -->
+		<section id="albums-section" data-bind="visible: view()=='albums'">
+			<div class="container">
+			<div class="row toolbar">
+				<div class="col-lg-12">
+				<a class="btn btn-primary" href="#/albums/new"><span class="glyphicon glyphicon-plus">Add new</span></a>
+				</div>
+			</div>
+			<ul data-bind="foreach: albums" class="row">
+				<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<a href="#" data-bind="attr: {href: '#/albums/'+id}"><img src="" data-bind="attr: {src: '../'+cover}"/></a>
+					<span data-bind="text: title"></span>
+				</li>
+			</ul>
+			</div>
+		</section>
+		<!--End albums list -->
+		<!--Photo list -->
+        <section id="album-section" data-bind="visible: view()=='album', with: currentAlbumData">
+		<div class="container">
+			<div class="row toolbar">
+				<div class="col-lg-12">
+				<h4 data-bind="text: title"></h4>
+				<a class="btn btn-primary" href="#" data-bind="attr: {href: '#/albums/'+id()+'/new'}"><span class="glyphicon glyphicon-plus">Add new photo</span></a>
+				<a class="btn btn-primary" href="#" data-bind="click: $root.shareAlbum"><span class="glyphicon glyphicon-share">Share</span></a>
+				<a class="btn btn-danger" href="#" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete</span></a>
+				<a class="btn btn-primary" href="#/albums"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
+				</div>
+			</div>
+			<ul data-bind="foreach: photos" class="row">
+				<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+					<a href="#" data-bind="attr: {href: '#/albums/'+$parent.id()+'/'+id}"><img src="" data-bind="attr: {src: '../'+url}"/></a>
+					<span data-bind="text: caption"></span>
+				</li>
+			</ul>
+			</div>
+        </section>
+        <!--End photo list -->
+        <!--Photo details -->
+        <section id="photo-section" data-bind="visible: view()=='photo', with: currentPhotoData">
+			<div class="container">
+				<div class="row toolbar">
+					<div class="col-lg-12">
+					<h4 data-bind="text: caption"></h4>
+					<button class="btn btn-primary"><span class="glyphicon glyphicon-repeat">Rotate</span></button>
+					<button class="btn btn-danger" data-bind="click: $root.deletePhoto"><span class="glyphicon glyphicon-trash">Delete</span></button>
+					<a href="#/albums" data-bind="attr: {href: '#/albums/'+$root.currentAlbumData.id()}" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
+				</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<img src="" data-bind="attr:{src:'../'+url()}"/>
+					</div>
+					<div class="col-md-6">
+						<div id="map"></div>
+					</div>
+				</div>
+			</div>
+		<!--End photo details -->
+        </section>
+    </div>
+</div>
+
+   <div class="modal fade" id="newAlbumModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">  
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Create new gallery</h4>
+			</div>           
+          <div class="modal-body"> 
+			 <form class="form" id="newalbum" method="POST" action="{{url_for('albums')}}" enctype="multipart/form-data">
+					<dl>
+
+				<dt>
+				<label for="photos">Photos</label>
+					<input id="photos" name="photos" type="file" multiple="multiple">
+				</dt>
+
+				<dt>
+				<label for="track">GPS Track</label>
+					<input id="track" name="track" type="file">
+				</dt>
+
+				<dt>
+				<label for="title">Album title</label>
+					<input type="text" id="title" name="title">
+				</dt>
+
+				<dt>
+				<label for="title">Elevation plot?</label>
+					<select id="has_elevation" name="has_elevation">
+						<option value="0">No</option>
+						<option value="1">Yes</option>
+					</select>
+				</dt>
+
+				<dt>
+				<label for="basemap">Basemap</label>
+					<select id="basemap" name="basemap">
+						<option value="osm">OSM Standard</option>
+						<option value="mapbox">Mapbox Streets</option>
+						<option value="terrain">Mapbox Terrain</option>
+						<option value="satellite">Mapbox Satellite</option>
+					</select>
+				</dt>
+				</dl>            
+          </div>
+          <div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bind="click: uploadNewAlbum">Upload</button>
+				<button type="reset" class="btn btn-danger">Reset</button>
+				</form>   
+			</div> 
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+   <div class="modal fade" id="newPhotosModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content"> 
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Add photos to gallery</h4>
+			</div>        
+          <div class="modal-body"> 
+			 <form class="form" id="newphotos" method="POST" action="{{url_for('albums')}}" enctype="multipart/form-data" data-bind="attr: {action: './albums/'+currentAlbumData.id()}">
+				<dl>
+
+				<dt>
+				<label for="photos">Photos</label>
+					<input id="photos" name="photos" type="file" multiple="multiple">
+				</dt>
+				</dl>			               
+          </div>
+          <div class="modal-footer">
+			<button type="button" class="btn btn-success" data-bind="click: uploadNewPhotos">Upload</button>
+			<button type="reset" class="btn btn-danger">Reset</button>
+			</form> 
+		</div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+				
+<script type="text/javascript">
+
+var minstrelVModel = function() {
+	var self = this;
+	
+	self.map = L.map('map').setView([50, 20], 13);
+	
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(self.map);
+    
+    self.markers = new L.FeatureGroup();
+    self.map.addLayer(self.markers);
+    
+	self.view = ko.observable('albums');
+	self.albums = ko.observableArray();
+	self.currentAlbumData = {
+		'id': ko.observable(),
+		'title': ko.observable(),
+		'has_elevation': ko.observable(),
+		'basemap': ko.observable(),
+		'track': ko.observable(),
+		'photos': ko.observableArray()
+	};
+	self.currentPhotoData = {
+		'id': ko.observable(),
+		'lat': ko.observable(),
+		'lng': ko.observable(),
+		'caption': ko.observable(),
+		'url': ko.observable(),
+		'thumbnail': ko.observable()
+	};
+	
+	self.getAlbums = function() {
+		$.getJSON('./albums',function(data) {
+			self.albums(data.albums);
+		});
+	};
+	
+	self.getAlbumData = function(albumid) {
+		$.getJSON('./albums/'+albumid,function(data) {
+			for(var key in data) {
+				if(typeof self.currentAlbumData[key] == 'function') {
+					self.currentAlbumData[key](data[key]);
+				}
+			}
+		});
+	} 
+	
+	
+	self.setPhotoData = function(data) {
+		for(var key in data) {
+				if(typeof self.currentPhotoData[key] == 'function') {
+					self.currentPhotoData[key](data[key]);
+				}
+			}
+		self.markers.clearLayers();
+		L.marker([data.lat,data.lng]).addTo(self.markers);
+		self.map.setView([data.lat,data.lng],14);
+	}
+	
+	self.deletePhoto = function(photo) {
+		bootbox.confirm('Are you sure?', function(res) {
+			if(res) {
+				var pid = photo.id();
+				$.ajax({
+					url: './photos/'+pid,
+					type:'DELETE',
+					success: function() {
+						var aid = self.currentAlbumData.id();
+						location.hash = '#/albums/'+aid;
+						self.getAlbumData(aid);
+						bootbox.alert('Photo was deleted');
+					},
+					fail: function() {
+					}
+				});
+			}
+		});
+	}
+	
+	self.deleteAlbum = function(album) {
+		bootbox.confirm('Are you sure?', function(res) {
+			if(res) {
+				var aid = album.id();
+				$.ajax({
+					url: './albums/'+aid,
+					type:'DELETE',
+					success: function() {
+						location.hash = '';
+						self.getAlbums();
+						bootbox.alert('Album was deleted');
+					},
+					fail: function() {
+					}
+				});
+			}
+		});
+	}
+	
+	self.uploadNewAlbum = function() {
+		$('#newalbum').ajaxForm().ajaxSubmit(function(data) {
+			$('#newAlbumModal').modal('hide');
+			self.getAlbums();
+			location.hash = '';
+		});
+	};
+	
+	self.uploadNewPhotos = function() {
+		$('#newphotos').ajaxForm().ajaxSubmit(function(data) {
+			$('#newPhotosModal').modal('hide');
+			self.getAlbumData(self.currentAlbumData.id());
+			location.hash = '#/albums/'+self.currentAlbumData.id();
+		});
+	};
+	
+	self.getAlbums();
+	
+}
+
+var vm = new minstrelVModel();
+ko.applyBindings(vm);
+location.hash = '';
+
+
+Path.map('').to(function () {
+	$('#newAlbumModal').modal('hide');
+	vm.getAlbums();
+	vm.view('albums');
+});
+
+Path.map('#/albums').to(function () {
+	$('#newAlbumModal').modal('hide');
+	vm.getAlbums();
+	vm.view('albums');
+});
+
+Path.map('#/albums/new').to(function () {
+	$('#newAlbumModal').modal('show');
+});
+
+Path.map('#/albums/:albumid').to(function () {
+	var albumid = this.params.albumid;
+	vm.getAlbumData(albumid);
+	vm.view('album');
+});
+
+Path.map('#/albums/:albumid/new').to(function () {
+	$('#newPhotosModal').modal('show');
+});
+
+Path.map('#/albums/:albumid/:photoid').to(function() {
+	var photoid = this.params.photoid;
+	var photolist = vm.currentAlbumData.photos(); 
+	for(var p=0;p<photolist.length;p++) {
+		if(photolist[p].id == photoid) {
+			vm.setPhotoData(photolist[p]);
+			break;
+		}
+	}
+	vm.view('photo');
+});
+
+
+Path.listen();
+
+</script>
+{% endblock %}

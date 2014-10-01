@@ -52,3 +52,12 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# SQLite database
+minstrel.db
+
+# Media
+
+uploads/photos/
+uploads/thumbs/
+uploads/tracks/

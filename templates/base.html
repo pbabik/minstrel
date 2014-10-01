@@ -1,0 +1,52 @@
+<!doctype html>
+<head>
+<title>Minstrel</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+	<link rel="stylesheet" href="{{url_for('static',filename='bootstrap/css/bootstrap.min.css')}}">
+	<link rel="stylesheet" href="{{url_for('static',filename='bootstrap/css/bootstrap-theme.min.css')}}">
+	<script src="{{url_for('static',filename='jquery-2.1.0.min.js')}}"></script>
+	<script src="{{url_for('static',filename='jquery.form.min.js')}}"></script>
+	<script src="{{url_for('static',filename='bootstrap/js/bootstrap.min.js')}}"></script>
+	<script src="{{url_for('static',filename='bootbox.min.js')}}"></script>
+	<script src="{{url_for('static',filename='knockout-min.js')}}"></script>
+	<script src="{{url_for('static',filename='underscore-min.js')}}"></script>
+	<script src="{{url_for('static',filename='path.min.js')}}"></script>
+	
+	{% block styles %}
+	{% endblock %}
+	
+	{% block scripts %}
+	{% endblock %}
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+          </button>
+          <span class="navbar-brand">Minstrel</span>
+                {% if session.logged_in %}
+                <ul class="nav navbar-nav">
+				<li><a href="./dashboard">My Galleries</a>
+				</li>-->
+			    </ul>
+			    {% endif %}
+          </div>
+          <ul class="nav navbar-nav navbar-right">
+			{% if not session.logged_in %}
+           <li><a href="{{ url_for('auth.login') }}">log in</a></li>
+           <li><a href="{{ url_for('join') }}">join</a></li>
+           {% else %}
+           <li><a href="{{ url_for('auth.logout') }}">log out</a></li>
+           {% endif %}	
+		  </ul>
+        </div>
+      </div>
+    </div>
+  <h2>{% block content_title %}{% endblock %}</h2>
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
