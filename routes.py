@@ -105,7 +105,7 @@ def photo(photoid):
         return jsonify({'updated':photoid})
     else:
         os.unlink(op.join(op.dirname(__file__),app.config['UPLOAD_FOLDER'],'photos',the_photo.url.split('/')[2]))
-        os.unlink(op.join(dirname(__file__),app.config['UPLOAD_FOLDER'],'photos',the_photo.url.split('/')[2]))
+        os.unlink(op.join(op.dirname(__file__),app.config['UPLOAD_FOLDER'],'thumbs',the_photo.url.split('/')[2]))
         the_photo.delete_instance()
         return jsonify({'deleted':photoid})
 

@@ -7,7 +7,7 @@
 {% if error %}<div class="alert alert-warning"><p class=error<b>Error:</b>{{ error }}</div>{% endif %}
 
 <form class="form-horizontal" action="." method="post">
-		<input type="hidden" name="next" value="" />
+		<input type="hidden" name="next" value="{{url_for('dashboard')}}" />
         <div class="form-group">
             <label for="inputEmail" class="control-label col-xs-2">Username</label>
             <div class="col-xs-5">

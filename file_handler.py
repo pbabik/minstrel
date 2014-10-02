@@ -35,7 +35,7 @@ def handle_photo(a_photo):
     im.thumbnail((100,100), Image.ANTIALIAS)
     im.save(op.join(UPLOAD_FOLDER,'thumbs',new_name))
     latlng = geom_from_exif(im)
-    return {'user':auth.get_logged_in_user(),'url':'media/photos/%s' % new_name, 'thumbnail': 'media/photos/%s' % new_name, 'caption': '', 'lat': latlng[0], 'lng': latlng[1]}
+    return {'user':auth.get_logged_in_user(),'url':'media/photos/%s' % new_name, 'thumbnail': 'media/thumbs/%s' % new_name, 'caption': '', 'lat': latlng[0], 'lng': latlng[1]}
     
 
 def handle_photos(a_list):

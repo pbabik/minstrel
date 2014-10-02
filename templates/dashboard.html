@@ -21,10 +21,19 @@
 }
 
 #map {
-	height: 400px;
+	height: 425px;
 	width:100%;
 	
 }
+
+.album-photo, .full-photo {
+	max-width: 100%;
+}
+
+.album-photo {
+	max-height: 180px;
+}
+
 </style>
 <link rel="stylesheet" href="{{url_for('static',filename='leaflet.css')}}">
 {% endblock %}
@@ -38,22 +47,24 @@
 
 {% block content %}
 
-<div class="container" id="metacontainer">
+<div id="metacontainer">
     <div class="row">
 		<!--Albums list -->
 		<section id="albums-section" data-bind="visible: view()=='albums'">
 			<div class="container">
 			<div class="row toolbar">
 				<div class="col-lg-12">
-				<a class="btn btn-primary" href="#/albums/new"><span class="glyphicon glyphicon-plus">Add new</span></a>
+				<button data-bind="click: showAlbumModal" class="btn btn-primary"><span class="glyphicon glyphicon-plus">Add new</span></button>
 				</div>
 			</div>
-			<ul data-bind="foreach: albums" class="row">
-				<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<a href="#" data-bind="attr: {href: '#/albums/'+id}"><img src="" data-bind="attr: {src: '../'+cover}"/></a>
-					<span data-bind="text: title"></span>
-				</li>
-			</ul>
+			<div data-bind="foreach: albums" class="row">
+				<div class="col-md-3">
+					<div class="well">
+						<a href="#" data-bind="attr: {href: '#/albums/'+id}"><img src="" class="album-photo" data-bind="attr: {src: '../'+cover}"/></a>
+						<p data-bind="text: title"></p>
+					</div>
+				</div>
+			</div>
 			</div>
 		</section>
 		<!--End albums list -->
@@ -63,18 +74,22 @@
 			<div class="row toolbar">
 				<div class="col-lg-12">
 				<h4 data-bind="text: title"></h4>
-				<a class="btn btn-primary" href="#" data-bind="attr: {href: '#/albums/'+id()+'/new'}"><span class="glyphicon glyphicon-plus">Add new photo</span></a>
-				<a class="btn btn-primary" href="#" data-bind="click: $root.shareAlbum"><span class="glyphicon glyphicon-share">Share</span></a>
-				<a class="btn btn-danger" href="#" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete</span></a>
+				<button class="btn btn-primary" data-bind="click: $root.showPhotosModal"><span class="glyphicon glyphicon-plus">Add photo</span></button>
+				<button class="btn btn-primary" data-bind="click: $root.showShareModal"><span class="glyphicon glyphicon-share">Share</span></button>
+				<button class="btn btn-danger" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete</span></button>
 				<a class="btn btn-primary" href="#/albums"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
 			</div>
-			<ul data-bind="foreach: photos" class="row">
-				<li class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
-					<a href="#" data-bind="attr: {href: '#/albums/'+$parent.id()+'/'+id}"><img src="" data-bind="attr: {src: '../'+url}"/></a>
-					<span data-bind="text: caption"></span>
-				</li>
-			</ul>
+			<div data-bind="foreach: photos" class="row">
+				<div class="col-md-3">
+					<div class="well">
+						<a href="#" data-bind="attr: {href: '#/albums/'+$parent.id()+'/'+id}">
+							<img src="" class="album-photo" data-bind="attr: {src: '../'+url}"/>
+						</a>
+						<span data-bind="text: caption"></span>
+					</div>
+				</div>
+			</div>
 			</div>
         </section>
         <!--End photo list -->
@@ -84,14 +99,13 @@
 				<div class="row toolbar">
 					<div class="col-lg-12">
 					<h4 data-bind="text: caption"></h4>
-					<button class="btn btn-primary"><span class="glyphicon glyphicon-repeat">Rotate</span></button>
 					<button class="btn btn-danger" data-bind="click: $root.deletePhoto"><span class="glyphicon glyphicon-trash">Delete</span></button>
 					<a href="#/albums" data-bind="attr: {href: '#/albums/'+$root.currentAlbumData.id()}" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6">
-						<img src="" data-bind="attr:{src:'../'+url()}"/>
+						<img src="" class="full-photo" data-bind="attr:{src:'../'+url()}"/>
 					</div>
 					<div class="col-md-6">
 						<div id="map"></div>
@@ -115,8 +129,8 @@
 					<dl>
 
 				<dt>
-				<label for="photos">Photos</label>
-					<input id="photos" name="photos" type="file" multiple="multiple">
+				<label for="album-photos">Photos</label>
+					<input id="album-photos" name="photos" type="file" multiple="multiple">
 				</dt>
 
 				<dt>
@@ -169,8 +183,8 @@
 				<dl>
 
 				<dt>
-				<label for="photos">Photos</label>
-					<input id="photos" name="photos" type="file" multiple="multiple">
+				<label for="new-photos">Photos</label>
+					<input id="new-photos" name="photos" type="file" multiple="multiple">
 				</dt>
 				</dl>			               
           </div>
@@ -179,6 +193,23 @@
 			<button type="reset" class="btn btn-danger">Reset</button>
 			</form> 
 		</div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+   <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content"> 
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Share</h4>
+			</div>        
+          <div class="modal-body"> 
+			 <p><b>Fullscreen map:</b></p>
+			 <p><pre>http://127.0.0.1:5007/map/<span data-bind="text: currentAlbumData.id"></span></pre></p>
+			 <p><b>Embed in a web page:</b></p>
+			 <p><pre>&lt;iframe src="http://127.0.0.1:5007/map/<span data-bind="text: currentAlbumData.id"></span>" width="600" height="300" scrolling="no"&gt;&lt;/iframe&gt;</pre></p>
+          </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
@@ -285,6 +316,18 @@ var minstrelVModel = function() {
 	}
 	
 	self.uploadNewAlbum = function() {
+		if(!$('#album-photos').val()) {
+			bootbox.alert('No photos selected!');
+			return;
+		}
+		else if(!$('#track').val()) {
+			bootbox.alert('GPS track was not supplied');
+			return;
+		}
+		else if(!$('#title').val()) {
+			bootbox.alert('Album title was not given');
+			return;
+		}
 		$('#newalbum').ajaxForm().ajaxSubmit(function(data) {
 			$('#newAlbumModal').modal('hide');
 			self.getAlbums();
@@ -293,12 +336,28 @@ var minstrelVModel = function() {
 	};
 	
 	self.uploadNewPhotos = function() {
+		if(!$('#new-photos').val()) {
+			bootbox.alert('No photos selected!');
+			return;
+		}
 		$('#newphotos').ajaxForm().ajaxSubmit(function(data) {
 			$('#newPhotosModal').modal('hide');
 			self.getAlbumData(self.currentAlbumData.id());
 			location.hash = '#/albums/'+self.currentAlbumData.id();
 		});
 	};
+	
+	self.showPhotosModal = function() {
+		$('#newPhotosModal').modal('show');
+	}
+	
+	self.showAlbumModal = function() {
+		$('#newAlbumModal').modal('show');
+	}
+	
+	self.showShareModal = function() {
+		$('#shareModal').modal('show');
+	}
 	
 	self.getAlbums();
 	
@@ -321,9 +380,6 @@ Path.map('#/albums').to(function () {
 	vm.view('albums');
 });
 
-Path.map('#/albums/new').to(function () {
-	$('#newAlbumModal').modal('show');
-});
 
 Path.map('#/albums/:albumid').to(function () {
 	var albumid = this.params.albumid;
@@ -331,9 +387,6 @@ Path.map('#/albums/:albumid').to(function () {
 	vm.view('album');
 });
 
-Path.map('#/albums/:albumid/new').to(function () {
-	$('#newPhotosModal').modal('show');
-});
 
 Path.map('#/albums/:albumid/:photoid').to(function() {
 	var photoid = this.params.photoid;
