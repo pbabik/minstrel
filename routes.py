@@ -10,7 +10,7 @@ import peewee
 from app import app, db
 from auth import auth
 from models import User, Album, Photo
-from file_handler import handle_photos, handle_track
+from file_handler import handle_photos, handle_track, rotate_image
 
 @app.route('/')
 def homepage():
@@ -136,3 +136,9 @@ def join():
 @app.route('/media/<filetype>/<filename>')
 def send_media(filetype,filename):
     return send_from_directory(op.join(app.config['UPLOAD_FOLDER'],filetype),filename)
+
+@app.route('/rotate',methods=['POST'])
+def rotate():
+    im = request.form.get('photo').split('/')[2]
+    direction = request.form.get('direction')
+    return jsonify({'rotated':rotate_image(im,direction)})

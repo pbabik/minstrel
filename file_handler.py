@@ -54,3 +54,14 @@ def geom_from_exif(an_image):
     the_exif = get_exif_data(an_image)
     latlon = get_lat_lon(the_exif)	
     return latlon
+
+def rotate_image(imgfile,direction):
+    angle = 270 if direction == 'right' else 90
+    im1 = Image.open(op.join(UPLOAD_FOLDER,'photos',imgfile))
+    im1 = im1.rotate(angle,Image.BICUBIC,True)
+    im1.save(op.join(UPLOAD_FOLDER,'photos',imgfile))
+    im2 = Image.open(op.join(UPLOAD_FOLDER,'thumbs',imgfile))
+    im2 = im2.rotate(angle,Image.BILINEAR,True)
+    im2.save(op.join(UPLOAD_FOLDER,'thumbs',imgfile))
+    return imgfile
+    
