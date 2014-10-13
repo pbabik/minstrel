@@ -61,7 +61,7 @@
 				<div class="col-md-3">
 					<div class="well">
 						<a href="#" data-bind="attr: {href: '#/albums/'+id}"><img src="" class="album-photo" data-bind="attr: {src: '../'+cover}"/></a>
-						<p data-bind="text: title"></p>
+					    <p data-bind="text:title"></p>
 					</div>
 				</div>
 			</div>
@@ -74,9 +74,9 @@
 			<div class="row toolbar">
 				<div class="col-lg-12">
 				<h4 data-bind="text: title"></h4>
-				<button class="btn btn-primary" data-bind="click: $root.showPhotosModal"><span class="glyphicon glyphicon-plus">Add photo</span></button>
+				<button class="btn btn-primary" data-bind="click: $root.showPhotosModal"><span class="glyphicon glyphicon-plus">Add photo(s)</span></button>
 				<button class="btn btn-primary" data-bind="click: $root.showShareModal"><span class="glyphicon glyphicon-share">Share</span></button>
-				<button class="btn btn-danger" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete</span></button>
+				<button class="btn btn-danger" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete album</span></button>
 				<a class="btn btn-primary" href="#/albums"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
 			</div>
@@ -84,12 +84,12 @@
 				<div class="col-md-3">
 					<div class="well">
 						<a href="#" data-bind="attr: {href: '#/albums/'+$parent.id()+'/'+id}">
-							<img src="" class="album-photo" data-bind="attr: {src: '../'+url}"/>
+						    <img src="" class="album-photo" data-bind="attr: {src: '../'+url}"/>
 						</a>
 						<span data-bind="text: caption"></span>
 							<a href="#" data-bind="click: $root.rotateRight"><i class="fa fa-rotate-right"></i></a>
 							<a href="#" data-bind="click: $root.rotateLeft"><i class="fa fa-rotate-left"></i></a>
-							<a href="#" data-bind="$root.deletePhoto"></a><i class="fa fa-trash"></i></a>
+							<a href="#" data-bind="click: $root.deletePhoto"><i class="fa fa-trash"></i></a>
 					</div>
 				</div>
 			</div>
@@ -102,6 +102,8 @@
 				<div class="row toolbar">
 					<div class="col-lg-12">
 					<h4 data-bind="text: caption"></h4>
+					<button class="btn btn-primary" data-bind="click: $root.rotateRight"><i class="fa fa-rotate-right"></i> Rotate right</button>
+					<button class="btn btn-primary" data-bind="click: $root.rotateLeft"><i class="fa fa-rotate-left"></i> Rotate left</button>
 					<button class="btn btn-danger" data-bind="click: $root.deletePhoto"><span class="glyphicon glyphicon-trash">Delete</span></button>
 					<a href="#/albums" data-bind="attr: {href: '#/albums/'+$root.currentAlbumData.id()}" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
@@ -125,7 +127,7 @@
         <div class="modal-content">  
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title">Create new gallery</h4>
+				<h4 class="modal-title">Create new album</h4>
 			</div>           
           <div class="modal-body"> 
 			 <form class="form" id="newalbum" method="POST" action="{{url_for('albums')}}" enctype="multipart/form-data">
@@ -179,7 +181,7 @@
         <div class="modal-content"> 
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h4 class="modal-title">Add photos to gallery</h4>
+				<h4 class="modal-title">Add photos to album</h4>
 			</div>        
           <div class="modal-body"> 
 			 <form class="form" id="newphotos" method="POST" action="{{url_for('albums')}}" enctype="multipart/form-data" data-bind="attr: {action: './albums/'+currentAlbumData.id()}">
@@ -288,7 +290,7 @@ var minstrelVModel = function() {
 	self.deletePhoto = function(photo) {
 		bootbox.confirm('Are you sure?', function(res) {
 			if(res) {
-				var pid = photo.id();
+				var pid = typeof photo.id == 'function' ? photo.id() : photo.id;
 				$.ajax({
 					url: './photos/'+pid,
 					type:'DELETE',
@@ -306,7 +308,8 @@ var minstrelVModel = function() {
 	}
 	
 	self._rotate = function(photo,direction) {
-		var photo_url = photo.url, photo_thumb = photo.thumbnail;
+		var photo_url = typeof photo.url == 'function' ? photo.url() : photo.url;
+		var photo_thumb = typeof photo.thumbnail == 'function' ? photo.thumbnail() : photo.thumbnail;
 		$.post('./rotate',{
 			'photo': photo_url,
 			'direction': direction
