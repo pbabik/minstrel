@@ -64,6 +64,8 @@
     shadowUrl: '{{url_for('static',filename='leaflet-gpx-master/pin-shadow.png')}}'
   }})
   
+  {% if album.has_elevation %}
+  
   var ele = L.control.elevation();
   ele.addTo(map);
   
@@ -71,6 +73,7 @@
 			ele.addData(e.line);
 	});
   
+  {% endif %}
   
   gpx.addTo(map);
   
