@@ -14,11 +14,11 @@ from file_handler import handle_photos, handle_track, rotate_image
 
 @app.route('/')
 def homepage():
-    return render_template('index.html')
+    return render_template('index.html',site='home')
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html',site='dashboard')
 
 def insert_photos(req,album):
     if req.files.getlist('photos'):
@@ -70,6 +70,10 @@ def album(albumid):
         return jsonify({'Updated':albumid})      
     elif request.method == 'PUT':
         newdata = request.get_json(force=True)
+        if newdata['has_elevation'] == '0':
+            newdata['has_elevation'] = False
+        else:
+            newdata['has_elevation'] = True			    			
         the_album.title = newdata['title']
         the_album.has_elevation = newdata['has_elevation']
         the_album.basemap = newdata['basemap']
@@ -131,7 +135,7 @@ def join():
             auth.login_user(user)
             return redirect(url_for('dashboard'))
 
-    return render_template('join.html')
+    return render_template('join.html',site='join')
 
 @app.route('/media/<filetype>/<filename>')
 def send_media(filetype,filename):

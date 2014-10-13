@@ -4,7 +4,7 @@
 
 {% block content %}
 
-{% if error %}<div class="alert alert-warning"><p class=error<b>Error:</b>{{ error }}</div>{% endif %}
+{% if get_flashed_messages() %}<div class="alert alert-warning"><p class=error<b>Error:</b>{{ get_flashed_messages() }}</div>{% endif %}
 
 <form class="form-horizontal" action="." method="post">
 		<input type="hidden" name="next" value="{{url_for('dashboard')}}" />

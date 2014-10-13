@@ -76,6 +76,7 @@
 				<h4 data-bind="text: title"></h4>
 				<button class="btn btn-primary" data-bind="click: $root.showPhotosModal"><span class="glyphicon glyphicon-plus">Add photo(s)</span></button>
 				<button class="btn btn-primary" data-bind="click: $root.showShareModal"><span class="glyphicon glyphicon-share">Share</span></button>
+				<button class="btn btn-primary" data-bind="click: $root.showSettingsModal"><span class="glyphicon glyphicon-cog">Settings</span></button>
 				<button class="btn btn-danger" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete album</span></button>
 				<a class="btn btn-primary" href="#/albums"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
@@ -102,8 +103,8 @@
 				<div class="row toolbar">
 					<div class="col-lg-12">
 					<h4 data-bind="text: caption"></h4>
-					<button class="btn btn-primary" data-bind="click: $root.rotateRight"><i class="fa fa-rotate-right"></i> Rotate right</button>
-					<button class="btn btn-primary" data-bind="click: $root.rotateLeft"><i class="fa fa-rotate-left"></i> Rotate left</button>
+				<!--	<button class="btn btn-primary" data-bind="click: $root.rotateRight"><i class="fa fa-rotate-right"></i> Rotate right</button>
+					<button class="btn btn-primary" data-bind="click: $root.rotateLeft"><i class="fa fa-rotate-left"></i> Rotate left</button> -->
 					<button class="btn btn-danger" data-bind="click: $root.deletePhoto"><span class="glyphicon glyphicon-trash">Delete</span></button>
 					<a href="#/albums" data-bind="attr: {href: '#/albums/'+$root.currentAlbumData.id()}" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
@@ -161,7 +162,7 @@
 					<select id="basemap" name="basemap">
 						<option value="osm">OSM Standard</option>
 						<option value="mapbox">Mapbox Streets</option>
-						<option value="terrain">Mapbox Terrain</option>
+						<option value="hikebike">Hike&amp;Bike</option>
 						<option value="satellite">Mapbox Satellite</option>
 					</select>
 				</dt>
@@ -171,6 +172,49 @@
 				<button type="button" class="btn btn-success" data-bind="click: uploadNewAlbum">Upload</button>
 				<button type="reset" class="btn btn-danger">Reset</button>
 				</form>   
+			</div> 
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+   <div class="modal fade" id="albumSettingsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">  
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">Settings</h4>
+			</div>           
+          <div class="modal-body"> 
+			 <form class="form" id="albumsettings" data-bind="with: currentAlbumData">
+					<dl>
+
+				<dt>
+				<label for="title">Album title</label>
+					<input type="text" data-bind="value: title" name="title">
+				</dt>
+
+				<dt>
+				<label for="title">Elevation plot?</label>
+					<select data-bind="value: has_elevation" name="has_elevation">
+						<option value="0">No</option>
+						<option value="1">Yes</option>
+					</select>
+				</dt>
+
+				<dt>
+				<label for="basemap">Basemap</label>
+					<select data-bind="value: basemap" name="basemap">
+						<option value="osm">OSM Standard</option>
+						<option value="mapbox">Mapbox Streets</option>
+						<option value="hikebike">Hike&amp;Bike</option>
+						<option value="satellite">Mapbox Satellite</option>
+					</select>
+				</dt>
+				</dl>   
+				</form>    
+          </div>
+          <div class="modal-footer">
+				<button type="button" class="btn btn-success" data-bind="click: updateCurrentAlbum">Save</button>
 			</div> 
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -389,6 +433,21 @@ var minstrelVModel = function() {
 		});
 	};
 	
+	self.updateCurrentAlbum = function() {
+		$.ajax({
+			'url': './albums/'+self.currentAlbumData.id(),
+			'type': 'PUT',
+			'data': ko.toJSON(self.currentAlbumData),
+			'success': function() {
+				bootbox.alert('Settings updated');
+				$('#albumSettingsModal').modal('hide');
+			},
+			'fail': function() {
+				bootbox.alert('Saving failed');
+			}
+		})
+	}
+	
 	self.showPhotosModal = function() {
 		$('#newPhotosModal').modal('show');
 	}
@@ -399,6 +458,10 @@ var minstrelVModel = function() {
 	
 	self.showShareModal = function() {
 		$('#shareModal').modal('show');
+	}
+	
+	self.showSettingsModal = function() {
+		$('#albumSettingsModal').modal('show');
 	}
 	
 	self.getAlbums();

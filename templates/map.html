@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="https://rawgit.com/turban/Leaflet.Photo/gh-pages/examples/lib/cluster/MarkerCluster.css" />	
 	<link rel="stylesheet" href="https://rawgit.com/turban/Leaflet.Photo/gh-pages/Leaflet.Photo.css" />	
 	<link rel="stylesheet" href="https://rawgit.com/turban/Leaflet.Photo/gh-pages/examples/css/map.css" />
-	<link rel="stylesheet" href="{{url_for('static',filename='leaflet-elevation/Leaflet.Elevation-0.0.2.css')}}" /
+	<link rel="stylesheet" href="{{url_for('static',filename='leaflet-elevation/Leaflet.Elevation-0.0.2.css')}}" />
 </head>
 <body>
 	<div id="map"></div>
@@ -23,10 +23,34 @@
 
 	var map = L.map('map');
 
-	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-	}).addTo(map);
+	});
+		
+	var mbstreet = L.tileLayer("http://a.tiles.mapbox.com/v3/michalmackiewicz.tm2-basemap/{z}/{x}/{y}.png", {
+		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, hosting and design <a href="http://mapbox.com" target="_blank">MapBox</a>',
+	});
+	
+	var mbsat = L.tileLayer("http://a.tiles.mapbox.com/v3/michalmackiewicz.map-5m4105td/{z}/{x}/{y}.png", {
+		attribution: '&copy; <a href="http://mapbox.com" target="_blank">MapBox</a>',
+	});
+	
+	var hb = L.tileLayer("http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png", {
+		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, hosting and design <a href="http://hikebikemap.de" target="_blank">Hike&Bike Map</a>',
+	});
 
+	{% if album.basemap == 'osm' %}
+		osm.addTo(map);
+	{% elif album.basemap == 'mapbox' %}
+		mbstreet.addTo(map);
+	{% elif album.basemap =='satellite' %}
+		mbsat.addTo(map);
+	{% elif album.basemap == 'hikebike' %}
+		hb.addTo(map);
+	{% else %}
+		osm.addTo(map);
+	{% endif %}
+	
 
 	$.getJSON('{{url_for('album',albumid=album.id)}}',{},
          function (data) {
