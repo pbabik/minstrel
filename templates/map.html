@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="https://rawgit.com/turban/Leaflet.Photo/gh-pages/examples/lib/cluster/MarkerCluster.css" />	
 	<link rel="stylesheet" href="https://rawgit.com/turban/Leaflet.Photo/gh-pages/Leaflet.Photo.css" />	
 	<link rel="stylesheet" href="https://rawgit.com/turban/Leaflet.Photo/gh-pages/examples/css/map.css" />
+	<link rel="stylesheet" href="{{url_for('static',filename='leaflet-elevation/Leaflet.Elevation-0.0.2.css')}}" /
 </head>
 <body>
 	<div id="map"></div>
@@ -16,6 +17,8 @@
 	<script src="https://rawgit.com/turban/Leaflet.Photo/gh-pages/examples/lib/cluster/leaflet.markercluster.js"></script>
 	<script src="https://rawgit.com/turban/Leaflet.Photo/gh-pages/Leaflet.Photo.js"></script>	
 	<script src="{{url_for('static',filename='leaflet-gpx-master/gpx.js')}}"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="{{url_for('static',filename='leaflet-elevation/Leaflet.Elevation-0.0.2.min.js')}}"></script>
 	<script>
 
 	var map = L.map('map');
@@ -55,11 +58,22 @@
 		}
 	);
 	
-	new L.GPX('{{url_for('send_media',filetype='tracks',filename=album.track)}}', {async: true,marker_options: {
+	var gpx = new L.GPX('{{url_for('send_media',filetype='tracks',filename=album.track)}}', {async: true,marker_options: {
     startIconUrl: '{{url_for('static',filename='leaflet-gpx-master/pin-icon-start.png')}}',
     endIconUrl: '{{url_for('static',filename='leaflet-gpx-master/pin-icon-end.png')}}',
     shadowUrl: '{{url_for('static',filename='leaflet-gpx-master/pin-shadow.png')}}'
-  }}).addTo(map);
+  }})
+  
+  var ele = L.control.elevation();
+  ele.addTo(map);
+  
+  gpx.on("addline",function(e){
+			ele.addData(e.line);
+	});
+  
+  
+  gpx.addTo(map);
+  
 
 	</script>
 </body>
