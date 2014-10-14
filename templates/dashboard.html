@@ -77,8 +77,8 @@
 				<button class="btn btn-primary" data-bind="click: $root.showPhotosModal"><span class="glyphicon glyphicon-plus">Add photo(s)</span></button>
 				<button class="btn btn-primary" data-bind="click: $root.showShareModal"><span class="glyphicon glyphicon-share">Share</span></button>
 				<button class="btn btn-primary" data-bind="click: $root.showSettingsModal"><span class="glyphicon glyphicon-cog">Settings</span></button>
-				<button class="btn btn-danger" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete album</span></button>
 				<a class="btn btn-primary" href="#/albums"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
+				<button class="btn btn-danger pull-right" data-bind="click: $root.deleteAlbum"><span class="glyphicon glyphicon-remove">Delete album</span></button>
 				</div>
 			</div>
 			<div data-bind="foreach: photos" class="row">
@@ -105,7 +105,7 @@
 					<h4 data-bind="text: caption"></h4>
 				<!--	<button class="btn btn-primary" data-bind="click: $root.rotateRight"><i class="fa fa-rotate-right"></i> Rotate right</button>
 					<button class="btn btn-primary" data-bind="click: $root.rotateLeft"><i class="fa fa-rotate-left"></i> Rotate left</button> -->
-					<button class="btn btn-danger" data-bind="click: $root.deletePhoto"><span class="glyphicon glyphicon-trash">Delete</span></button>
+					<button class="btn btn-danger pull-right" data-bind="click: $root.deletePhoto"><span class="glyphicon glyphicon-trash">Delete</span></button>
 					<a href="#/albums" data-bind="attr: {href: '#/albums/'+$root.currentAlbumData.id()}" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left">Back</span></a>
 				</div>
 				</div>
