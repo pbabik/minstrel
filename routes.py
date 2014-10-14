@@ -46,6 +46,10 @@ def albums():
             track = handle_track(request.files.get('track'))
         else:
             track = ''
+        if request.form.get('has_elevation') == '1':
+            has_elevation = True
+        else:
+            has_elevation = False
         new_album = Album(user=current_user,title=request.form.get('title'),has_elevation=True,basemap=request.form.get('basemap'),track=track)
         new_album.save()
         insert_photos(request,new_album)

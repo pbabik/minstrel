@@ -22,21 +22,23 @@
 	<script>
 
 	var map = L.map('map');
+	
+	var service_attribution = ' Powered by <a href="https://github.com/pbabik/minstrel" target="_blank">Minstrel</a> ';
 
 	var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		attribution: service_attribution+'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	});
 		
 	var mbstreet = L.tileLayer("http://a.tiles.mapbox.com/v3/michalmackiewicz.tm2-basemap/{z}/{x}/{y}.png", {
-		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, hosting and design <a href="http://mapbox.com" target="_blank">MapBox</a>',
+		attribution: service_attribution+'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, hosting and design <a href="http://mapbox.com" target="_blank">MapBox</a>',
 	});
 	
 	var mbsat = L.tileLayer("http://a.tiles.mapbox.com/v3/michalmackiewicz.map-5m4105td/{z}/{x}/{y}.png", {
-		attribution: '&copy; <a href="http://mapbox.com" target="_blank">MapBox</a>',
+		attribution: service_attribution+'&copy; <a href="http://mapbox.com" target="_blank">MapBox</a>',
 	});
 	
 	var hb = L.tileLayer("http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png", {
-		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, hosting and design <a href="http://hikebikemap.de" target="_blank">Hike&Bike Map</a>',
+		attribution: service_attribution+'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, hosting and design <a href="http://hikebikemap.de" target="_blank">Hike&Bike Map</a>',
 	});
 
 	{% if album.basemap == 'osm' %}

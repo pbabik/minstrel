@@ -171,6 +171,7 @@
           <div class="modal-footer">
 				<button type="button" class="btn btn-success" data-bind="click: uploadNewAlbum">Upload</button>
 				<button type="reset" class="btn btn-danger">Reset</button>
+				<div class="hide" id="loading-album"><img src="{{url_for('static',filename='images/ajax-loader.gif')}}"/> Loading...</div>
 				</form>   
 			</div> 
         </div><!-- /.modal-content -->
@@ -240,6 +241,7 @@
           <div class="modal-footer">
 			<button type="button" class="btn btn-success" data-bind="click: uploadNewPhotos">Upload</button>
 			<button type="reset" class="btn btn-danger">Reset</button>
+			<div class="hide" id="loading-photos"><img src="{{url_for('static',filename='images/ajax-loader.gif')}}"/> Loading...</div>
 			</form> 
 		</div>
         </div><!-- /.modal-content -->
@@ -414,7 +416,9 @@ var minstrelVModel = function() {
 			bootbox.alert('Album title was not given');
 			return;
 		}
+		$('#loading-album').removeClass('hide');
 		$('#newalbum').ajaxForm().ajaxSubmit(function(data) {
+			$('#loading-album').addClass('hide');
 			$('#newAlbumModal').modal('hide');
 			self.getAlbums();
 			location.hash = '';
@@ -426,7 +430,9 @@ var minstrelVModel = function() {
 			bootbox.alert('No photos selected!');
 			return;
 		}
+		$('#loading-photos').removeClass('hide');
 		$('#newphotos').ajaxForm().ajaxSubmit(function(data) {
+			$('#loading-photos').addClass('hide');
 			$('#newPhotosModal').modal('hide');
 			self.getAlbumData(self.currentAlbumData.id());
 			location.hash = '#/albums/'+self.currentAlbumData.id();
