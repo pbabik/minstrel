@@ -18,7 +18,7 @@ def homepage():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html',site='dashboard')
+    return render_template('dashboard.html',site='dashboard',base_url=app.config['BASE_URL'])
 
 def insert_photos(req,album):
     if req.files.getlist('photos'):

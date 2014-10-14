@@ -255,9 +255,9 @@
 			</div>        
           <div class="modal-body"> 
 			 <p><b>Fullscreen map:</b></p>
-			 <p><pre>http://127.0.0.1:5007/map/<span data-bind="text: currentAlbumData.id"></span></pre></p>
+			 <p><pre>{{base_url}}/map/<span data-bind="text: currentAlbumData.id"></span></pre></p>
 			 <p><b>Embed in a web page:</b></p>
-			 <p><pre>&lt;iframe src="http://127.0.0.1:5007/map/<span data-bind="text: currentAlbumData.id"></span>" width="600" height="300" scrolling="no"&gt;&lt;/iframe&gt;</pre></p>
+			 <p><pre>&lt;iframe src="{{base_url}}/map/<span data-bind="text: currentAlbumData.id"></span>" width="600" height="300" scrolling="no"&gt;&lt;/iframe&gt;</pre></p>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
