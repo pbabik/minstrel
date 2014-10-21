@@ -21,17 +21,18 @@
 }
 
 #map {
-	height: 425px;
+	height: 450px;
 	width:100%;
 	
 }
 
 .album-photo, .full-photo {
 	max-width: 100%;
+	max-height: 450px;
 }
 
 .album-photo {
-	max-height: 180px;
+	height: 180px;
 }
 
 </style>
@@ -88,6 +89,7 @@
 						<a href="#" data-bind="attr: {href: '#/albums/'+$parent.id()+'/'+id}">
 						    <img src="" class="album-photo" data-bind="attr: {src: '../'+url+'?ts='+new Date().getTime()}"/>
 						</a>
+						<div class="clearfix"></div>
 						<span data-bind="text: caption"></span>
 							<a href="#" data-bind="click: $root.rotateRight" title="Rotate right"><i class="fa fa-rotate-right"></i></a>
 							<a href="#" data-bind="click: $root.rotateLeft" title="Rotate left"><i class="fa fa-rotate-left"></i></a>
@@ -171,7 +173,6 @@
           </div>
           <div class="modal-footer">
 				<button type="button" class="btn btn-success" data-bind="click: uploadNewAlbum">Upload</button>
-				<button type="reset" class="btn btn-danger">Reset</button>
 				<div class="hide" id="loading-album"><img src="{{url_for('static',filename='images/ajax-loader.gif')}}"/> Loading...</div>
 				</form>   
 			</div> 
@@ -241,7 +242,6 @@
           </div>
           <div class="modal-footer">
 			<button type="button" class="btn btn-success" data-bind="click: uploadNewPhotos">Upload</button>
-			<button type="reset" class="btn btn-danger">Reset</button>
 			<div class="hide" id="loading-photos"><img src="{{url_for('static',filename='images/ajax-loader.gif')}}"/> Loading...</div>
 			</form> 
 		</div>
