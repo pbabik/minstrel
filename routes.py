@@ -147,6 +147,6 @@ def send_media(filetype,filename):
 
 @app.route('/rotate',methods=['POST'])
 def rotate():
-    im = request.form.get('photo').split('/')[2]
+    im = request.form.get('photo').split('/')[2].split('?')[0]
     direction = request.form.get('direction')
     return jsonify({'rotated':rotate_image(im,direction)})

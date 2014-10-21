@@ -86,7 +86,7 @@
 				<div class="col-md-3">
 					<div class="well">
 						<a href="#" data-bind="attr: {href: '#/albums/'+$parent.id()+'/'+id}">
-						    <img src="" class="album-photo" data-bind="attr: {src: '../'+url}"/>
+						    <img src="" class="album-photo" data-bind="attr: {src: '../'+url+'?ts='+new Date().getTime()}"/>
 						</a>
 						<span data-bind="text: caption"></span>
 							<a href="#" data-bind="click: $root.rotateRight" title="Rotate right"><i class="fa fa-rotate-right"></i></a>
@@ -112,7 +112,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-6">
-						<img src="" class="full-photo" data-bind="attr:{src:'../'+url()}"/>
+						<img src="" class="full-photo" data-bind="attr:{src:'../'+url()+'?ts='+new Date().getTime()}"/>
 					</div>
 					<div class="col-md-6">
 						<div id="map"></div>
