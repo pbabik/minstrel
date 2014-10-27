@@ -56,7 +56,6 @@ def albums():
         return jsonify({'Created':new_album.id}),201    
     
 @app.route('/albums/<albumid>',methods=['GET','POST','PUT','DELETE'])
-@auth.login_required
 def album(albumid):
     try:
         the_album = Album.get(Album.id==albumid)
@@ -70,9 +69,13 @@ def album(albumid):
             resp['photos'].append(row)
         return jsonify(resp)
     elif request.method == 'POST':
+        if not auth.get_logged_in_user():
+            abort(401)
         insert_photos(request,the_album)
         return jsonify({'Updated':albumid})      
     elif request.method == 'PUT':
+        if not auth.get_logged_in_user():
+            abort(401)
         newdata = request.get_json(force=True)
         if newdata['has_elevation'] == '0':
             newdata['has_elevation'] = False
@@ -84,6 +87,8 @@ def album(albumid):
         the_album.save()
         return jsonify({'updated':albumid}) 
     else:
+        if not auth.get_logged_in_user():
+            abort(401)
         album_photos = Photo.select(Photo.album==the_album)
         for row in album_photos:
             try:
